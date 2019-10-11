@@ -1,10 +1,11 @@
+var dotenv = require("dotenv").config();
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var axios = require("axios");
 var moment = require("moment");
-var dotenv = require("dotenv");
 
-//var spotify = new Spotify(keys.spotify);
+
+var spotify = new Spotify(keys.spotify);
 
 if (process.argv[2]) {
     var command = process.argv[2];
@@ -17,7 +18,13 @@ switch(command) {
     }
     case "spotify-this-song" :
     {
-        spotifyIt(process.argv[3]);
+        if(process.argv[3]) {
+            spotifyIt(process.argv[3]);
+        }
+        else {
+            spotifyIt("The Sign");
+        }
+        
     }
     case "movie-this" :
     {
@@ -32,9 +39,7 @@ switch(command) {
 function concert(band) {
     axios.get("https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp").then(
         function(response) {
-          //console.log(response.data);
           var data = response.data;
-          //console.log(data[0].venue);
           console.log("*_*_*_*_*_*_*LIST OF VENUES FOR " + band + "*_*_*_*_*_*_*")
           data.forEach((object) => {
           console.log("The name of the venue is: " + object.venue.name);
@@ -58,7 +63,23 @@ function concert(band) {
 }
 
 function spotifyIt(song) {
-
+    spotify.search({ type: 'track', query: song })
+        .then(function(response) {
+            // console.log(response);
+            var data = response.tracks.items;
+            // console.log(data[0]);
+          console.log("*_*_*_*_*_*_*MUSICAL INFORMATION FOR QUERY: " + song + "*_*_*_*_*_*_*")
+          data.forEach((object) => {
+          console.log("The artist is: " + object.artists[0].name);
+          console.log("The song's name is: " + object.name);
+          console.log("The song album is: " + object.album.name);
+          console.log("Preview link: " + object.preview_url);
+          console.log("\n_____________________________________________\n");
+          })
+        })
+        .catch(function(err) {
+            console.log(err);
+    });
 }
 
 function movieIt(movie) {
