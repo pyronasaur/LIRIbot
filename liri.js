@@ -28,7 +28,12 @@ switch(command) {
     }
     case "movie-this" :
     {
-        movieIt(process.argv[3]);
+        if(process.argv[3]) {
+            movieIt(process.argv[3]);
+        }
+        else {
+            movieIt("Mr. Nobody");
+        }
     }
     case "do-what-it-says" :
     {
@@ -83,7 +88,23 @@ function spotifyIt(song) {
 }
 
 function movieIt(movie) {
-
+    axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy")
+        .then(
+            function(response) {
+                var data = response.data;
+                //console.log(data);
+                console.log("The movie's title is: " + data.Title);
+                console.log("The movie's opening year is: " + data.Year);
+                console.log("The movie's IMDB rating is: " + data.imdbRating);
+                console.log("The movie's Rotten Tomatoes rating is: " + data.Ratings[1].Value);
+                console.log("The movie's country of production is: " + data.Country);
+                console.log("The movie's language is: " + data.Language);
+                console.log("The movie's plot is: " + data.Plot);
+                console.log("The movie's actors are: " + data.Actors);
+            })
+        .catch(function(err) {
+            console.log(err);
+        });
 }
 
 function doWhatItSays() {
