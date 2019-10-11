@@ -3,6 +3,8 @@ var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var axios = require("axios");
 var moment = require("moment");
+var fs = require("fs");
+var cmdLine = require("node-command-line");
 
 
 var spotify = new Spotify(keys.spotify);
@@ -109,4 +111,16 @@ function movieIt(movie) {
 
 function doWhatItSays() {
 
+fs.readFile("random.txt", "utf8", function(error, data) {
+    if (error) {
+        return console.log(error);
+    }
+
+    console.log(data);
+    var dataArr = data.split(",");
+    var commandToRun = "node liri.js " + dataArr[0] + " " + dataArr[1];
+    console.log(commandToRun);
+    // cmdLine.run(commandToRun);
+    spotifyIt(dataArr[1]);
+    });
 }
